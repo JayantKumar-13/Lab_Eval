@@ -1,0 +1,46 @@
+clc;
+clear all;
+close all;
+
+%% Exact Equation of Gd
+mue=-5:5; % value of nu
+inde=0; 
+for vmuer=-5:5
+    
+inde=inde+1;
+intFe=quad('exp((-j*pi*x.^2)/2)',vmuer,20); %Integration of the function used in integral part of Complex Fresnel Integral
+fe=abs((0.5+0.5*j)*intFe ) %Complex Fresnel Integral.
+Gdb_e(inde)=20*log10(fe) % diffraction Gain in dB
+end
+plot(mue,Gdb_e);
+%% Approximate Equations of Gd
+
+ i=0
+LL=-5; %lower limit
+UL=5; % upper limit
+v=LL:UL; 
+for vn=LL:UL
+i=i+1
+
+if(vn < -1.0)
+	Gdb(i)=0 
+elseif( vn <= 0)
+	Gdb(i)=20*log10(0.5-0.62*vn)
+elseif(vn <= 1)
+	Gdb(i)=20*log10(0.5*exp(-0.95*vn))
+elseif(vn <= 2.4)
+	Gdb(i)=20*log10(0.4-sqrt(0.1184-(0.38-0.1*vn).^2))
+else
+	Gdb(i)=20*log10(0.225/vn)
+end
+end
+
+plot(v,Gdb,mue,Gdb_e)
+
+xlabel('x (Freshnel-Diferential Parameter V)'); 
+ylabel('y (Knife-Edge Differential Gain Gd[dB])'); 
+title('Integrated Diffraction Gain Plot '); 
+
+gtext('Plot without approximation') 
+gtext('Plot with approximation') 
+grid on
